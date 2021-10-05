@@ -1,0 +1,1 @@
+cd E:\Ivo\Cyber Minor\target-script-manager\TargetScriptManager\TargetScriptManager && ts.py
