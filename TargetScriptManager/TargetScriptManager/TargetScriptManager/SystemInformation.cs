@@ -6,11 +6,9 @@ namespace TargetScriptManager
 {
     public class SystemInformation
     {
-        public string CurrentBootTime { get; set; }
-        public string CurrentTotalProcessorTime { get; set; }
-        public string CurrentLoadPercentage { get; set; }
-        public string CurrentAvailableMemoryBytes { get; set; }
-        public string CurrentDiskBytesPerSec { get; set; }
-        public string CurrentPingStatistics { get; set; }
+        public string CurrentSystemUpTime { get; set; }
+        public string CurrentCpuPercentageUsage { get; set; }
+        public string CurrentRamPercentageUsage { get; set; }
+        public string CurrentInternetConnectivity { get; set; }
     }
 }
