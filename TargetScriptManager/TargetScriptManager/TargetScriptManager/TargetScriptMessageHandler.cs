@@ -1,14 +1,21 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using websocket_client;
 
 namespace TargetScriptManager
 {
-    public class TargetScriptMessageHandler<T> : MessageHandler<T>
+    public class TargetScriptMessageHandler<T> : MessageHandler<T> where T : Message
     {
         public override void HandleMessage(string message)
         {
-            var obj = ReceiveAsObj(message);
-            throw new NotImplementedException();
+            Console.WriteLine(message);
+        }
+        
+        
+        public void ImIvoIWantToSendMessage(string message)
+        {
+            SendMessage(message);
         }
     }
 }

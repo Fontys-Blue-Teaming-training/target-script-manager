@@ -6,13 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="5.0.1" />
     <PackageReference Include="System.Management" Version="5.0.0" />
+    <PackageReference Include="WatsonWebsocket" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="websocket-client">
-      <HintPath>..\websocket-client.dll</HintPath>
+      <HintPath>..\..\..\..\websocket-client\websocket-client\bin\Debug\netcoreapp3.1\websocket-client.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Text.Json;
 using websocket_client;
 using System.Threading;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TargetScriptManager
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             //TimeSpan ts = shc.GetSystemUpTimeMinutes();
             //Console.WriteLine(ts.TotalMinutes);
@@ -18,6 +17,10 @@ namespace TargetScriptManager
             //shc.PingAsync().Start();
             //bool b = shc.PingAsync().Result;
             //Console.WriteLine(b);
+            var handler = new TargetScriptMessageHandler<Message>();
+            SocketClient client = new SocketClient(handler);
+            client.InitClient();
+            await client.StartClient();
 
             SystemHealthChecker shc = new SystemHealthChecker();
             TimeSpan tss;
@@ -43,20 +46,18 @@ namespace TargetScriptManager
                     CurrentRamPercentageUsage = shc.GetRamPercentageUsage(),
                     CurrentInternetConnectivity = s
                 };
-                string jsonString = JsonSerializer.Serialize<SystemInformation>(systemInformation);
-                Console.WriteLine(jsonString);
+                string jsonString = JsonConvert.SerializeObject(systemInformation);
+                var bla = new InfoMessage(InfoMessageType.INFO, jsonString);
+                handler.SendMessage(JsonConvert.SerializeObject(bla));
                 Thread.Sleep(2000);
             }
 
-
-
-
+            Console.ReadLine();
             //SystemInformation si = new SystemInformation();
             //si.CurrentSystemUpTime = tss.TotalMinutes.ToString();
             //si.CurrentCpuPercentageUsage = shc.GetCpuPercentageUsage() + "%";
             //si.CurrentRamPercentageUsage = shc.GetRamPercentageUsage();
             //si.CurrentInternetConnectivity = s;
-
         }
     }
 }
