@@ -10,10 +10,6 @@ namespace TargetScriptManager
     {
         static async Task Main(string[] args)
         {
-            SystemHealthChecker shcc = new SystemHealthChecker();
-            shcc.GetRamPercentageUsage();
-
-
             Console.WriteLine("Client running.");
             var handler = new TargetScriptMessageHandler<Message>();
             SocketClient client = new SocketClient(handler, "192.168.1.2");
