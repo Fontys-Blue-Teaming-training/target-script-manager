@@ -10,27 +10,13 @@ namespace TargetScriptManager
     {
         static async Task Main(string[] args)
         {
-            //SystemHealthChecker shcc = new SystemHealthChecker();
-            //Console.WriteLine(shcc.GetSystemUpTimeMinutes());
-            //Console.WriteLine(shcc.GetCpuPercentageUsage());
-            //Console.WriteLine(shcc.GetRamPercentageUsage());
+            SystemHealthChecker shcc = new SystemHealthChecker();
+            shcc.GetRamPercentageUsage();
 
-            //if (shcc.GetCpuPercentageUsageRaw() > 10)
-            //{
-            //    Console.WriteLine("above 10");
-            //}
-            //if (shcc.GetCpuPercentageUsageRaw() < 20)
-            //{
-            //    Console.WriteLine("below 20");
-            //}
-            //if (shcc.GetRamPercentageUsageRaw() < 3000)
-            //{
-            //    Console.WriteLine("test");
-            //}
 
             Console.WriteLine("Client running.");
             var handler = new TargetScriptMessageHandler<Message>();
-            SocketClient client = new SocketClient(handler);
+            SocketClient client = new SocketClient(handler, "192.168.1.2");
             client.InitClient();
             await client.StartClient();
 

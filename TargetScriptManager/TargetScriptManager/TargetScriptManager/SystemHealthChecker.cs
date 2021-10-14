@@ -6,6 +6,8 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using Microsoft.VisualBasic;
 
 namespace TargetScriptManager
 {
@@ -61,8 +63,20 @@ namespace TargetScriptManager
 
         public string GetRamPercentageUsage()
         {
-            PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
-            return ramCounter.NextValue() + "MB";
+            PerformanceCounter performanceCounter = new PerformanceCounter("Memory", "Available MBytes");
+            float f = 0;
+            ObjectQuery wql = new ObjectQuery("SELECT * FROM Win32_OperatingSystem");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(wql);
+            ManagementObjectCollection results = searcher.Get();
+
+            foreach (ManagementObject result in results)
+            {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+                f = float.Parse(result["TotalVisibleMemorySize"].ToString());
+            }
+            float maxRAM = f / 1000;
+            float ramPercentage = (performanceCounter.NextValue() / maxRAM) * 100;
+      
+            return Math.Round(ramPercentage).ToString() + "%";
         }
 
         public async Task<bool> PingAsync()
