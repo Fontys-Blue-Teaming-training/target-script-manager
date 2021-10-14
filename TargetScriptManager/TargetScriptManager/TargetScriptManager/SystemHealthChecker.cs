@@ -52,7 +52,7 @@ namespace TargetScriptManager
                 value = cpuCounter.NextValue();
             }
 
-            return value.ToString();
+            return Math.Round(value).ToString();
         }
 
         public float GetRamPercentageUsageRaw()
@@ -61,7 +61,7 @@ namespace TargetScriptManager
             return ramCounter.NextValue();
         }
 
-        public string GetRamPercentageUsage()
+        public double GetRamPercentageUsage()
         {
             PerformanceCounter performanceCounter = new PerformanceCounter("Memory", "Available MBytes");
             float f = 0;
@@ -74,9 +74,9 @@ namespace TargetScriptManager
                 f = float.Parse(result["TotalVisibleMemorySize"].ToString());
             }
             float maxRAM = f / 1000;
-            float ramPercentage = (performanceCounter.NextValue() / maxRAM) * 100;
-      
-            return Math.Round(ramPercentage).ToString() + "%";
+            float usedRAM = maxRAM - performanceCounter.NextValue();
+            float ramPercentage = (usedRAM / maxRAM) * 100;
+            return Math.Round(ramPercentage);
         }
 
         public async Task<bool> PingAsync()

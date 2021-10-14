@@ -23,37 +23,30 @@ namespace TargetScriptManager
 
             while (true)
             {
+                var CurrentCpuPercentageUsage = Math.Round(shc.GetCpuPercentageUsageRaw());
                 tss = shc.GetSystemUpTimeMinutes();
                 pingCheck = shc.PingAsync().Result;
-                if (pingCheck)
-                {
-                    s = "The system can connect to the internet";
-                }
-                else
-                {
-                    s = "The system cannot connect to the internet";
-                }
 
                 bool cpuCheck = false;
                 bool ramCheck = false;
 
-                if (shc.GetCpuPercentageUsageRaw() > 10)
+                if (CurrentCpuPercentageUsage > 15)
                 {
                     cpuCheck = true;
                 }
 
-                if (shc.GetRamPercentageUsageRaw() > 3000)
+                if (shc.GetRamPercentageUsageRaw() <= 3000)
                 {
-                    cpuCheck = true;
+                    ramCheck = true;
                 }
 
 
                 var systemInformation = new SystemInformation
                 {
-                    CurrentSystemUpTime = tss.TotalMinutes.ToString(),
-                    CurrentCpuPercentageUsage = shc.GetCpuPercentageUsage() + "%",
+                    CurrentSystemUpTime = Math.Round(tss.TotalMinutes).ToString(),
+                    CurrentCpuPercentageUsage = CurrentCpuPercentageUsage,
                     CurrentRamPercentageUsage = shc.GetRamPercentageUsage(),
-                    CurrentInternetConnectivity = s
+                    CurrentInternetConnectivity = pingCheck
                 };
                 string jsonString = JsonConvert.SerializeObject(systemInformation);
 
