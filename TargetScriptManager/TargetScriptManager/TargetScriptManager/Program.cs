@@ -10,13 +10,25 @@ namespace TargetScriptManager
     {
         static async Task Main(string[] args)
         {
-            //TimeSpan ts = shc.GetSystemUpTimeMinutes();
-            //Console.WriteLine(ts.TotalMinutes);
-            //Console.WriteLine(shc.GetCpuPercentageUsage() + "%");
-            //Console.WriteLine(shc.GetRamPercentageUsage());
-            //shc.PingAsync().Start();
-            //bool b = shc.PingAsync().Result;
-            //Console.WriteLine(b);
+            //SystemHealthChecker shcc = new SystemHealthChecker();
+            //Console.WriteLine(shcc.GetSystemUpTimeMinutes());
+            //Console.WriteLine(shcc.GetCpuPercentageUsage());
+            //Console.WriteLine(shcc.GetRamPercentageUsage());
+
+            //if (shcc.GetCpuPercentageUsageRaw() > 10)
+            //{
+            //    Console.WriteLine("above 10");
+            //}
+            //if (shcc.GetCpuPercentageUsageRaw() < 20)
+            //{
+            //    Console.WriteLine("below 20");
+            //}
+            //if (shcc.GetRamPercentageUsageRaw() < 3000)
+            //{
+            //    Console.WriteLine("test");
+            //}
+
+            Console.WriteLine("Client running.");
             var handler = new TargetScriptMessageHandler<Message>();
             SocketClient client = new SocketClient(handler);
             client.InitClient();
@@ -24,14 +36,14 @@ namespace TargetScriptManager
 
             SystemHealthChecker shc = new SystemHealthChecker();
             TimeSpan tss;
-            bool bb;
             string s;
+            bool pingCheck;
 
             while (true)
             {
                 tss = shc.GetSystemUpTimeMinutes();
-                bb = shc.PingAsync().Result;
-                if (bb)
+                pingCheck = shc.PingAsync().Result;
+                if (pingCheck)
                 {
                     s = "The system can connect to the internet";
                 }
@@ -39,6 +51,21 @@ namespace TargetScriptManager
                 {
                     s = "The system cannot connect to the internet";
                 }
+
+                bool cpuCheck = false;
+                bool ramCheck = false;
+
+                if (shc.GetCpuPercentageUsageRaw() > 10)
+                {
+                    cpuCheck = true;
+                }
+
+                if (shc.GetRamPercentageUsageRaw() > 3000)
+                {
+                    cpuCheck = true;
+                }
+
+
                 var systemInformation = new SystemInformation
                 {
                     CurrentSystemUpTime = tss.TotalMinutes.ToString(),
@@ -47,17 +74,19 @@ namespace TargetScriptManager
                     CurrentInternetConnectivity = s
                 };
                 string jsonString = JsonConvert.SerializeObject(systemInformation);
-                var bla = new InfoMessage(InfoMessageType.INFO, jsonString);
-                handler.SendMessage(JsonConvert.SerializeObject(bla));
+
+                if (pingCheck == false || cpuCheck || ramCheck)
+                {
+                    var info = new InfoMessage(InfoMessageType.WARNING, jsonString);
+                    handler.SendMessage(JsonConvert.SerializeObject(info));
+                }
+                else
+                {
+                    var info = new InfoMessage(InfoMessageType.INFO, jsonString);
+                    handler.SendMessage(JsonConvert.SerializeObject(info));
+                }
                 Thread.Sleep(2000);
             }
-
-            Console.ReadLine();
-            //SystemInformation si = new SystemInformation();
-            //si.CurrentSystemUpTime = tss.TotalMinutes.ToString();
-            //si.CurrentCpuPercentageUsage = shc.GetCpuPercentageUsage() + "%";
-            //si.CurrentRamPercentageUsage = shc.GetRamPercentageUsage();
-            //si.CurrentInternetConnectivity = s;
         }
     }
 }

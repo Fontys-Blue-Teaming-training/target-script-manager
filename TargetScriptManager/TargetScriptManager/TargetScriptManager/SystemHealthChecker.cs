@@ -29,6 +29,18 @@ namespace TargetScriptManager
             }
         }
 
+        public float GetCpuPercentageUsageRaw()
+        {
+            var value = cpuCounter.NextValue();
+
+            while (value > 100 || value < 1)
+            {
+                value = cpuCounter.NextValue();
+            }
+
+            return value;
+        }
+
         public string GetCpuPercentageUsage()
         {
             var value = cpuCounter.NextValue();
@@ -39,6 +51,12 @@ namespace TargetScriptManager
             }
 
             return value.ToString();
+        }
+
+        public float GetRamPercentageUsageRaw()
+        {
+            PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+            return ramCounter.NextValue();
         }
 
         public string GetRamPercentageUsage()
